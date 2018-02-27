@@ -4,7 +4,8 @@ describe('API', function () {
         expect = chai.expect,
         destroy = true,
         $altInput,
-        $input, dp;
+        $input,
+        dp;
 
     before(function () {
         $input = $('<input>').appendTo('#container');

@@ -61,7 +61,7 @@ describe('Options', function () {
             expect(dp.loc.days).to.eql($.fn.datepicker.language.en.days);
         });
         it('should change language to custom if object is passed', function () {
-            var daysMin = ['В','П','В','С','Ч','П','С'];
+            var daysMin = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
             dp = $input.datepicker({
                 language: {
                     daysMin: daysMin
@@ -69,7 +69,7 @@ describe('Options', function () {
             }).data('datepicker');
 
             expect(dp.loc.daysMin).to.eql(daysMin);
-            expect(dp.loc.days).to.eql($.fn.datepicker.language.ru.days);
+            expect(dp.loc.days).to.eql($.fn.datepicker.language.en.days);
         })
     });
 
@@ -79,7 +79,7 @@ describe('Options', function () {
                 startDate: new Date(2014,11,12)
             }).data('datepicker');
 
-            expect(dp.$nav.text()).to.have.string('Декабрь');
+            expect(dp.$nav.text()).to.have.string('December');
             expect(dp.$nav.text()).to.have.string('2014');
 
         })
@@ -93,16 +93,16 @@ describe('Options', function () {
 
             var firstCell = $('.datepicker--days-names .datepicker--day-name', dp.$datepicker).eq(0);
 
-            assert.equal(firstCell.text(),'Вт')
+            assert.equal(firstCell.text(),'Tu')
         })
-        it('should change first day of week to `Воскресенье` if it `0`', function () {
+        it('should change first day of week to `Sunday` if it `0`', function () {
             dp = $input.datepicker({
                 firstDay: 0
             }).data('datepicker');
 
             var firstCell = $('.datepicker--days-names .datepicker--day-name', dp.$datepicker).eq(0);
 
-            assert.equal(firstCell.text(),'Вс')
+            assert.equal(firstCell.text(),'Su')
         })
     });
 
@@ -124,20 +124,19 @@ describe('Options', function () {
         var date = new Date(2015, 6, 4, 11, 5),
             formats = {
                 '@': date.getTime(),
-                'aa': 'am',
-                'AA': 'AM',
-                'h': 11,
-                'hh': 11,
-                'i': 5,
-                'ii': '05',
+                'a': 'AM',
+                'H': 11,
+                'HH': 11,
+                'm': 5,
+                'mm': '05',
                 'dd': '04',
                 'd': 4,
-                'DD': 'Суббота',
-                'D': 'Суб',
-                'mm': '07',
-                'm': 7,
-                'MM': 'Июль',
-                'M': 'Июл',
+                'DD': 'Saturday',
+                'D': 'Sat',
+                'MMMM': 'July',
+                'MMM': 'Jul',
+                'MM': '07',
+                'M': 7,
                 'yyyy' : 2015,
                 'yy': 15,
                 'yyyy1': 2010,
@@ -153,6 +152,7 @@ describe('Options', function () {
 
                     dp.selectDate(date);
                     assert.equal(dp.$el.val(), 'Selected date: ' + formats[format]);
+                    dp.$el.val('');
                 })
             }(format))
         }
@@ -160,10 +160,11 @@ describe('Options', function () {
         it('should work with special characters', function () {
             dp = $input.datepicker({
                 language: 'de',
-                dateFormat: 'Month is MM'
+                dateFormat: 'Month is MMMM'
             }).data('datepicker');
             dp.selectDate(new Date(2016, 2, 1));
             expect(dp.$el.val()).to.be.equal('Month is März');
+            dp.$el.val('');
         })
     });
 
@@ -183,12 +184,13 @@ describe('Options', function () {
 
             dp = $input.datepicker({
                 altField: '.alt-field',
-                altFieldDateFormat: 'dd-mm-yyyy'
+                altFieldDateFormat: 'dd-MM-yyyy'
             }).data('datepicker');
 
             dp.selectDate(date);
 
             assert.equal(dp.$altField.val(), '17-12-2015');
+            dp.$el.val('');
         });
         
         it('should support 24 hour mode, even if main date format is in 12', function () {
@@ -196,14 +198,15 @@ describe('Options', function () {
 
             dp = $input.datepicker({
                 timepicker: true,
-                timeFormat: 'hh:ii aa',
+                timeFormat: 'HH:mm a',
                 altField: '.alt-field',
-                altFieldDateFormat: 'dd-mm-yyyy hh:ii'
+                altFieldDateFormat: 'dd-MM-yyyy HH:mm'
             }).data('datepicker');
 
             dp.selectDate(date);
 
             assert.equal(dp.$altField.val(), '17-12-2015 22:47');
+            dp.$el.val('');
         });
 
         it('should support 12 hour mode', function () {
@@ -211,14 +214,15 @@ describe('Options', function () {
 
             dp = $input.datepicker({
                 timepicker: true,
-                timeFormat: 'hh:ii',
+                timeFormat: 'HH:mm',
                 altField: '.alt-field',
-                altFieldDateFormat: 'dd-mm-yyyy hh:ii aa'
+                altFieldDateFormat: 'dd-MM-yyyy HH:mm a'
             }).data('datepicker');
 
             dp.selectDate(date);
 
-            assert.equal(dp.$altField.val(), '17-12-2015 10:47 pm');
+            assert.equal(dp.$altField.val(), '17-12-2015 10:47 PM');
+            dp.$el.val('');
         })
     });
 
@@ -232,6 +236,7 @@ describe('Options', function () {
             dp._getCell(date, 'day').click();
 
             expect(dp.selectedDates).to.have.length(0)
+            dp.$el.val('');
         });
 
         it('when false, click on selected cell must do nothing', function () {
@@ -245,6 +250,7 @@ describe('Options', function () {
             dp._getCell(date, 'day').click();
 
             expect(dp.selectedDates).to.have.length(1)
+            dp.$el.val('');
         })
     });
 
@@ -335,6 +341,7 @@ describe('Options', function () {
                 if (currentCase.view) {
                     assert.equal(currentCase.view, dp.view)
                 }
+                dp.$el.val('');
             })
 
         });
@@ -682,6 +689,7 @@ describe('Options', function () {
             dp.selectDate(new Date(2016, 0, 9));
 
             expect(dp.selectedDates).to.have.length(3)
+            dp.$el.val('');
         });
 
         it('if `number` should limit length of selected dates by its value', function () {
@@ -696,6 +704,7 @@ describe('Options', function () {
             dp.selectDate(new Date(2016, 0, 11));
 
             expect(dp.selectedDates).to.have.length(3)
+            dp.$el.val('');
         })
     });
 
@@ -710,6 +719,7 @@ describe('Options', function () {
             dp.selectDate(new Date(2016, 0, 13))
 
             expect($input.val()).to.have.string(' separator ')
+            dp.$el.val('');
         })
     });
 
@@ -897,7 +907,7 @@ describe('Options', function () {
             var date = new Date(2016,2,9,9,4);
             dp = $input.datepicker({
                 timepicker: true,
-                timeFormat: 'h - ii',
+                timeFormat: 'H - mm',
                 onSelect: function (fd, d) {
                     expect(fd).to.be.equal('09.03.2016 9 - 04')
                 }

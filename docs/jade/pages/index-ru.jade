@@ -106,14 +106,14 @@ block content
         h3#example-months Выбор месяца
         +example
             +example-content
-                input.datepicker-here(type='text' data-min-view='months' data-view='months' data-date-format='MM yyyy')
+                input.datepicker-here(type='text' data-min-view='months' data-view='months' data-date-format='MMMM yyyy')
             +example-code('html')
                 :code
                     <input type="text"
                         class="datepicker-here"
                         data-min-view="months"
                         data-view="months"
-                        data-date-format="MM yyyy" />
+                        data-date-format="MMMM yyyy" />
 
         h3#example-min-max Минимальная и максимальные даты
         p
@@ -366,10 +366,10 @@ block content
 
         +example
             +example-content
-                input.datepicker-here(type='text' data-timepicker='true', data-time-format='hh:ii aa')
+                input.datepicker-here(type='text' data-timepicker='true', data-time-format='HH:mm a')
             +example-code
                 :code
-                    <div class="datepicker-here" data-timepicker="true" data-time-format='hh:ii aa'></div>
+                    <div class="datepicker-here" data-timepicker="true" data-time-format='HH:mm a'></div>
 
         h3#timeformat-actions Действия со временем
         p Для задания максимально/минимально возможных значений часов или минут используйте параметры
@@ -514,7 +514,7 @@ block content
                 }
             })
 
-        p Если в вашей локализации не будет хватать каких-то полей, то они будут взяты из языка по умолчанию (русский язык).
+        p Если в вашей локализации не будет хватать каких-то полей, то они будут взяты из языка по умолчанию (английский язык).
 
         h3 Пример объекта локализации
         +example-code('js').
@@ -526,8 +526,8 @@ block content
                 monthsShort: ['Янв','Фев','Мар','Апр','Май','Июн','Июл','Авг','Сен','Окт','Ноя','Дек'],
                 today: 'Сегодня',
                 clear: 'Очистить',
-                dateFormat: 'dd.mm.yyyy',
-                timeFormat: 'hh:ii',
+                dateFormat: 'dd.MM.yyyy',
+                timeFormat: 'HH:mm',
                 firstDay: 1
             };
 
@@ -551,7 +551,7 @@ block content
             p Если в объекте локализации не будет хватать каких то полей, то они будут взяты из языка по умолчанию.
 
         .param
-            +param-header('startDate', 'Date', 'new Date()')
+            +param-header('startDate', 'Date|string', 'new Date()')
             p Дата, которая будет отображаться при инициализации календаря.
 
         .param
@@ -569,7 +569,7 @@ block content
 
         .param
             +param-header('dateFormat', 'string', '""')
-            p Желаемый формат даты, кобминация из d, m, yyyy, D, M, и т.д.  По умолчанию берется из локализации, если передать значение сюда, то оно будет иметь больший приоритет.
+            p Желаемый формат даты, кобминация из d, M, yyyy, D, и т.д.  По умолчанию берется из локализации, если передать значение сюда, то оно будет иметь больший приоритет.
             ul
                 li
                     +param('@')
@@ -587,16 +587,16 @@ block content
                     +param('DD')
                     | - полное наименование дня
                 li
-                    +param('m')
+                    +param('M')
                     | - номер мясяца
                 li
-                    +param('mm')
+                    +param('MM')
                     | - номер месяца с лидирующем нулем
                 li
-                    +param('M')
+                    +param('MMM')
                     | - сокращенное наименовение месяца
                 li
-                    +param('MM')
+                    +param('MMMM')
                     | - полное наименовение месяца
                 li
                     +param('yy')
@@ -714,11 +714,11 @@ block content
             p Если true, то при выборе года из другой декады, будет осуществлен переход к этой декаде.
 
         .param
-            +param-header('minDate', 'Date', '""')
+            +param-header('minDate', 'Date|string', '""')
             p Минимальная дата для возможности выбора. Все даты, идущее до нее нельзя будет активировать.
 
         .param
-            +param-header('maxDate', 'Date', '""')
+            +param-header('maxDate', 'Date|string', '""')
             p Максимальная дата для возможности выбора. Все даты, идущее после нее нельзя будет выбрать.
 
         .param
@@ -770,7 +770,7 @@ block content
                 +example-code('js')
                     :code
                         navTitles = {
-                            days: 'MM, <i>yyyy</i>',
+                            days: 'MMMM, <i>yyyy</i>',
                             months: 'yyyy',
                             years: 'yyyy1 - yyyy2'
                         };
@@ -782,7 +782,7 @@ block content
                 :code
                     $('#my-datepicker').datepicker({
                         navTitles: {
-                            days: '<h3>Выберете дату заезда</h3> MM, yyyy'
+                            days: '<h3>Выберете дату заезда</h3> MMMM, yyyy'
                         }
                     })
         .param
@@ -804,30 +804,27 @@ block content
         .param
             +param-header('timeFormat', 'string', 'null', 'opts-timeFormat')
             p Формат времени. По умолчанию берется из локализации. Если передать значение сюда, то оно будет иметь больший приоритет.
-                | Для включения 12-ти часового режима добавьте 'aa' или 'AA' в параметр
+                | Для включения 12-ти часового режима добавьте 'a' в параметр
                 +example-inline('timeFormat','js')
                 | , например
-                +example-inline('{timeFormat: "hh:ii AA"}','js')
+                +example-inline('{timeFormat: "HH:mm a"}','js')
                 | Возможные варианты:
             ul
                 li
-                    +param('h')
+                    +param('H')
                     | - часы
                 li
-                    +param('hh')
+                    +param('HH')
                     | - часы, с лидирующим нулем
                 li
-                    +param('i')
+                    +param('m')
                     | - минуты
                 li
-                    +param('ii')
+                    +param('mm')
                     | - минуты, с лидирующим нулем
                 li
-                    +param('aa')
-                    | - период дня - 'am' или 'pm'
-                li
-                    +param('AA')
-                    | - период дня заглавными буквами
+                    +param('a')
+                    | - период дня - 'AM' или 'PM'
 
         .param
             +param-header('minHours', 'number', '0', 'opts-minHours')

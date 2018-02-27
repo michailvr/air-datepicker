@@ -209,10 +209,10 @@
 
             if (_ampm) {
                 switch(true) {
-                    case hours == 0:
+                    case hours === 0:
                         hours = 12;
                         break;
-                    case hours == 12:
+                    case hours === 12:
                         dayPeriod = 'pm';
                         break;
                     case hours > 11:

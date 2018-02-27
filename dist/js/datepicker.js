@@ -1,19 +1,19 @@
 ;(function (window, $, undefined) { ;(function () {
-    var VERSION = '2.2.3',
+    var VERSION = '2.2.4',
         pluginName = 'datepicker',
         autoInitSelector = '.datepicker-here',
         $body, $datepickersContainer,
         containerBuilt = false,
         baseTemplate = '' +
-            '<div class="datepicker">' +
-            '<i class="datepicker--pointer"></i>' +
-            '<nav class="datepicker--nav"></nav>' +
-            '<div class="datepicker--content"></div>' +
-            '</div>',
+                       '<div class="datepicker">' +
+                       '<i class="datepicker--pointer"></i>' +
+                       '<nav class="datepicker--nav"></nav>' +
+                       '<div class="datepicker--content"></div>' +
+                       '</div>',
         defaults = {
             classes: '',
             inline: false,
-            language: 'ru',
+            language: 'en',
             startDate: new Date(),
             firstDay: '',
             weekends: [6, 0],
@@ -56,7 +56,7 @@
             prevHtml: '<svg><path d="M 17,12 l -5,5 l 5,5"></path></svg>',
             nextHtml: '<svg><path d="M 14,12 l 5,5 l -5,5"></path></svg>',
             navTitles: {
-                days: 'MM, <i>yyyy</i>',
+                days: 'MMMM, <i>yyyy</i>',
                 months: 'yyyy',
                 years: 'yyyy1 - yyyy2'
             },
@@ -100,26 +100,28 @@
         },
         datepicker;
 
-    var Datepicker  = function (el, options) {
+    var Datepicker = function (el, options) {
         this.el = el;
         this.$el = $(el);
 
         this.opts = $.extend(true, {}, defaults, options, this.$el.data());
 
-        if ($body == undefined) {
+        if ($body === undefined) {
             $body = $('body');
         }
 
         if (!this.opts.startDate) {
             this.opts.startDate = new Date();
+        } else if (typeof this.opts.startDate === 'string') {
+            this.opts.startDate = new Date(this.opts.startDate);
         }
 
-        if (this.el.nodeName == 'INPUT') {
+        if (this.el.nodeName === 'INPUT') {
             this.elIsInput = true;
         }
 
         if (this.opts.altField) {
-            this.$altField = typeof this.opts.altField == 'string' ? $(this.opts.altField) : this.opts.altField;
+            this.$altField = typeof this.opts.altField === 'string' ? $(this.opts.altField) : this.opts.altField;
         }
 
         this.inited = false;
@@ -162,6 +164,14 @@
                 if (this.opts.keyboardNav && !this.opts.onlyTimepicker) {
                     this._bindKeyboardEvents();
                 }
+                if (this.el.value) {
+                    if (this.opts.multipleDates || this.opts.range) {
+                        this.selectedDates = this.selectedDates.concat(this.parseDate(this.el.value, true));
+                    } else {
+                        this.currentDate = this.parseDate(this.el.value);
+                        this.selectedDates.push(this.currentDate);
+                    }
+                }
                 this.$datepicker.on('mousedown', this._onMouseDownDatepicker.bind(this));
                 this.$datepicker.on('mouseup', this._onMouseUpDatepicker.bind(this));
             }
@@ -196,7 +206,7 @@
             this.maxDate = this.opts.maxDate ? this.opts.maxDate : new Date(8639999913600000);
         },
 
-        _bindEvents : function () {
+        _bindEvents: function () {
             this.$el.on(this.opts.showEvent + '.adp', this._onShowEvent.bind(this));
             this.$el.on('mouseup.adp', this._onMouseUpEl.bind(this));
             this.$el.on('blur.adp', this._onBlur.bind(this));
@@ -220,16 +230,16 @@
         },
 
         _defineLocale: function (lang) {
-            if (typeof lang == 'string') {
+            if (typeof lang === 'string') {
                 this.loc = $.fn.datepicker.language[lang];
                 if (!this.loc) {
-                    console.warn('Can\'t find language "' + lang + '" in Datepicker.language, will use "ru" instead');
-                    this.loc = $.extend(true, {}, $.fn.datepicker.language.ru)
+                    console.warn('Can\'t find language "' + lang + '" in Datepicker.language, will use "en" instead');
+                    this.loc = $.extend(true, {}, $.fn.datepicker.language.en)
                 }
 
-                this.loc = $.extend(true, {}, $.fn.datepicker.language.ru, $.fn.datepicker.language[lang])
+                this.loc = $.extend(true, {}, $.fn.datepicker.language.en, $.fn.datepicker.language[lang])
             } else {
-                this.loc = $.extend(true, {}, $.fn.datepicker.language.ru, lang)
+                this.loc = $.extend(true, {}, $.fn.datepicker.language.en, lang)
             }
 
             if (this.opts.dateFormat) {
@@ -253,10 +263,8 @@
             }
 
             var boundary = this._getWordBoundaryRegExp;
-            if (this.loc.timeFormat.match(boundary('aa')) ||
-                this.loc.timeFormat.match(boundary('AA'))
-            ) {
-               this.ampm = true;
+            if (this.loc.timeFormat.match(boundary('a'))) {
+                this.ampm = true;
             }
         },
 
@@ -270,7 +278,7 @@
             var $appendTarget,
                 $inline = $('<div class="datepicker-inline">');
 
-            if(this.el.nodeName == 'INPUT') {
+            if (this.el.nodeName === 'INPUT') {
                 if (!this.opts.inline) {
                     $appendTarget = $datepickersContainer;
                 } else {
@@ -305,13 +313,13 @@
                     parsedSelected.minutes
                 );
 
-                formattedDates = selectedDates.map(function (date) {
-                    return _this.formatDate(_this.loc.dateFormat, date)
-                }).join(this.opts.multipleDatesSeparator);
+            formattedDates = selectedDates.map(function (date) {
+                return _this.formatDate(_this.loc.dateFormat, date)
+            }).join(this.opts.multipleDatesSeparator);
 
             // Create new dates array, to separate it from original selectedDates
             if (this.opts.multipleDates || this.opts.range) {
-                dates = selectedDates.map(function(date) {
+                dates = selectedDates.map(function (date) {
                     var parsedDate = datepicker.getParsedDate(date);
                     return new Date(
                         parsedDate.year,
@@ -365,6 +373,115 @@
             }
         },
 
+        parseDate: function (string, multiValue) {
+            var boundary = this._getWordBoundaryRegExp;
+            var locale = this.loc;
+            var format = locale.dateFormat;
+            if (format.match(boundary('@'))) {
+                try {
+                    return new Date(parseInt(string, 10));
+                } catch (e) {
+                    return new Date();
+                }
+            }
+            var ampm = format.match(boundary('a'));
+            var minMax;
+            var groups = [];
+            var regex = format.replace(/(M{1,4})|(d{1,2})|(yyyy|yy)|(H{1,2})|(m{1,2})|(a)/g,
+                                       function (match, month, date, year, hours, minutes, dayPeriod) {
+                                           var matchLength = match.length;
+                                           groups.push(match);
+                                           if (month) {
+                                               switch (matchLength) {
+                                                   case 4:
+                                                       minMax = locale.months.reduce(function (p, c) {
+                                                           var length = c.length;
+                                                           if (p[0] === 0 || p[0] > length) {
+                                                               p[0] = length;
+                                                           }
+                                                           if (p[1] <= length) {
+                                                               p[1] = length;
+                                                           }
+                                                           return p;
+                                                       }, [0, 0]).join(',');
+                                                       return '(.{' + minMax + '})';
+                                                   case 3:
+                                                       minMax = locale.monthsShort.reduce(function (p, c) {
+                                                           var length = c.length;
+                                                           if (p[0] === 0 || p[0] > length) {
+                                                               p[0] = length;
+                                                           }
+                                                           if (p[1] <= length) {
+                                                               p[1] = length;
+                                                           }
+                                                           return p;
+                                                       }, [0, 0]).join(',');
+                                                       return '(.{' + minMax + '})';
+                                                   default:
+                                                       return '(\\d{1,2})';
+                                               }
+                                           } else if (year) {
+                                               return '(\\d{' + matchLength + '})';
+                                           } else if (dayPeriod) {
+                                               return '';
+                                           }
+                                           return '(\\d{' + (matchLength === 2 ? '2' : '1,2') + '})';
+                                       });
+            if (multiValue) {
+                var matches = string.match(new RegExp(regex, 'g'));
+                var result = [];
+                if (matches) {
+                    matches.forEach(function (match) {
+                        match = string.match(regex).splice(1);
+                        result.push(this._parseDate0(match, groups, (ampm && /PM/.test(string)), locale));
+                    });
+                }
+                return result;
+            } else {
+                var match = string.match(regex).splice(1);
+                return this._parseDate0(match, groups, (ampm && /PM/.test(string)), locale);
+            }
+        },
+
+        _parseDate0: function(match, groups, ampm, locale) {
+            var toInt = function (value, failback) {
+                try {
+                    return parseInt(value, 10);
+                } catch (e) {
+                    return failback;
+                }
+            };
+            var parse = groups.reduce(function (p, v, i) {
+                if (/d/.test(v)) {
+                    p.date = toInt(match[i], p.date);
+                } else if (/M/.test(v)) {
+                    var val = -1;
+                    switch (v.length) {
+                        case 4:
+                            val = locale.months.indexOf(match[i]);
+                            break;
+                        case 3:
+                            val = locale.monthsShort.indexOf(match[i]);
+                            break;
+                        default:
+                            val = toInt(match[i], val) - 1;
+                    }
+                    p.month = val >= 0 ? val : p.month;
+                } else if (/yy/.test(v)) {
+                    p.year = toInt(match[i], p.year);
+                } else if (/H/.test(v)) {
+                    p.hours = toInt(match[i], p.hours);
+                } else if (/m/.test(v)) {
+                    p.minutes = toInt(match[i], p.minutes);
+                }
+                return p;
+            }, {date: 0, month: 0, year: 1970, hours: 0, minutes: 0});
+            if (ampm && parse.hours !== 12) {
+                parse.hours += 12;
+            }
+            return new Date(parse.year, parse.month, parse.date, parse.hours, parse.minutes);
+        },
+
         formatDate: function (string, date) {
             date = date || this.date;
             var result = string,
@@ -375,7 +492,7 @@
                 d = datepicker.getParsedDate(date),
                 fullHours = d.fullHours,
                 hours = d.hours,
-                ampm = string.match(boundary('aa')) || string.match(boundary('AA')),
+                ampm = string.match(boundary('a')),
                 dayPeriod = 'am',
                 replacer = this._replacer,
                 validHours;
@@ -390,10 +507,8 @@
             switch (true) {
                 case /@/.test(result):
                     result = result.replace(/@/, date.getTime());
-                case /aa/.test(result):
-                    result = replacer(result, boundary('aa'), dayPeriod);
-                case /AA/.test(result):
-                    result = replacer(result, boundary('AA'), dayPeriod.toUpperCase());
+                case /a/.test(result):
+                    result = replacer(result, boundary('a'), dayPeriod.toUpperCase());
                 case /dd/.test(result):
                     result = replacer(result, boundary('dd'), d.fullDate);
                 case /d/.test(result):
@@ -402,37 +517,37 @@
                     result = replacer(result, boundary('DD'), locale.days[d.day]);
                 case /D/.test(result):
                     result = replacer(result, boundary('D'), locale.daysShort[d.day]);
-                case /mm/.test(result):
-                    result = replacer(result, boundary('mm'), d.fullMonth);
-                case /m/.test(result):
-                    result = replacer(result, boundary('m'), d.month + 1);
+                case /MMMM/.test(result):
+                    result = replacer(result, boundary('MMMM'), locale.months[d.month]);
+                case /MMM/.test(result):
+                    result = replacer(result, boundary('MMM'), locale.monthsShort[d.month]);
                 case /MM/.test(result):
-                    result = replacer(result, boundary('MM'), this.loc.months[d.month]);
+                    result = replacer(result, boundary('MM'), d.fullMonth);
                 case /M/.test(result):
-                    result = replacer(result, boundary('M'), locale.monthsShort[d.month]);
-                case /ii/.test(result):
-                    result = replacer(result, boundary('ii'), d.fullMinutes);
-                case /i/.test(result):
-                    result = replacer(result, boundary('i'), d.minutes);
-                case /hh/.test(result):
-                    result = replacer(result, boundary('hh'), fullHours);
-                case /h/.test(result):
-                    result = replacer(result, boundary('h'), hours);
+                    result = replacer(result, boundary('M'), d.month + 1);
+                case /mm/.test(result):
+                    result = replacer(result, boundary('mm'), d.fullMinutes);
+                case /m/.test(result):
+                    result = replacer(result, boundary('m'), d.minutes);
+                case /HH/.test(result):
+                    result = replacer(result, boundary('HH'), fullHours);
+                case /H/.test(result):
+                    result = replacer(result, boundary('H'), hours);
                 case /yyyy/.test(result):
                     result = replacer(result, boundary('yyyy'), d.year);
+                case /yy/.test(result):
+                    result = replacer(result, boundary('yy'), d.year.toString().slice(-2));
                 case /yyyy1/.test(result):
                     result = replacer(result, boundary('yyyy1'), decade[0]);
                 case /yyyy2/.test(result):
                     result = replacer(result, boundary('yyyy2'), decade[1]);
-                case /yy/.test(result):
-                    result = replacer(result, boundary('yy'), d.year.toString().slice(-2));
             }
 
             return result;
         },
 
         _replacer: function (str, reg, data) {
-            return str.replace(reg, function (match, p1,p2,p3) {
+            return str.replace(reg, function (match, p1, p2, p3) {
                 return p1 + data + p3;
             })
         },
@@ -442,7 +557,6 @@
 
             return new RegExp('(^|>|' + symbols + ')(' + sign + ')($|<|' + symbols + ')', 'g');
         },
-
 
         selectDate: function (date) {
             var _this = this,
@@ -479,14 +593,14 @@
                 date.setMinutes(this.timepicker.minutes)
             }
 
-            if (_this.view == 'days') {
-                if (date.getMonth() != d.month && opts.moveToOtherMonthsOnSelect) {
+            if (_this.view === 'days') {
+                if (date.getMonth() !== d.month && opts.moveToOtherMonthsOnSelect) {
                     newDate = new Date(date.getFullYear(), date.getMonth(), 1);
                 }
             }
 
-            if (_this.view == 'years') {
-                if (date.getFullYear() != d.year && opts.moveToOtherYearsOnSelect) {
+            if (_this.view === 'years') {
+                if (date.getFullYear() !== d.year && opts.moveToOtherYearsOnSelect) {
                     newDate = new Date(date.getFullYear(), 0, 1);
                 }
             }
@@ -504,13 +618,13 @@
                     _this.selectedDates.push(date);
                 }
             } else if (opts.range) {
-                if (len == 2) {
+                if (len === 2) {
                     _this.selectedDates = [date];
                     _this.minRange = date;
                     _this.maxRange = '';
-                } else if (len == 1) {
+                } else if (len === 1) {
                     _this.selectedDates.push(date);
-                    if (!_this.maxRange){
+                    if (!_this.maxRange) {
                         _this.maxRange = date;
                     } else {
                         _this.minRange = date;
@@ -539,7 +653,7 @@
             if (opts.autoClose && !this.timepickerIsActive) {
                 if (!opts.multipleDates && !opts.range) {
                     _this.hide();
-                } else if (opts.range && _this.selectedDates.length == 2) {
+                } else if (opts.range && _this.selectedDates.length === 2) {
                     _this.hide();
                 }
             }
@@ -608,9 +722,9 @@
             var len = arguments.length,
                 lastSelectedDate = this.lastSelectedDate;
 
-            if (len == 2) {
+            if (len === 2) {
                 this.opts[param] = value;
-            } else if (len == 1 && typeof param == 'object') {
+            } else if (len === 1 && typeof param === 'object') {
                 this.opts = $.extend(true, this.opts, param)
             }
 
@@ -735,7 +849,7 @@
         _getDateFromCell: function (cell) {
             var curDate = this.parsedDate,
                 year = cell.data('year') || curDate.year,
-                month = cell.data('month') == undefined ? curDate.month : cell.data('month'),
+                month = cell.data('month') === undefined ? curDate.month : cell.data('month'),
                 date = cell.data('date') || 1;
 
             return new Date(year, month, date);
@@ -780,7 +894,7 @@
                     break;
             }
 
-            switch(secondary) {
+            switch (secondary) {
                 case 'top':
                     top = dims.top;
                     break;
@@ -795,17 +909,13 @@
                     break;
                 case 'center':
                     if (/left|right/.test(main)) {
-                        top = dims.top + dims.height/2 - selfDims.height/2;
+                        top = dims.top + dims.height / 2 - selfDims.height / 2;
                     } else {
-                        left = dims.left + dims.width/2 - selfDims.width/2;
+                        left = dims.left + dims.width / 2 - selfDims.width / 2;
                     }
             }
 
-            this.$datepicker
-                .css({
-                    left: left,
-                    top: top
-                })
+            this.$datepicker.css({left: left, top: top})
         },
 
         show: function () {
@@ -825,9 +935,7 @@
 
             this.$datepicker
                 .removeClass('active')
-                .css({
-                    left: '-100000px'
-                });
+                .css({left: '-100000px'});
 
             this.focused = '';
             this.keys = [];
@@ -858,7 +966,7 @@
         _changeView: function (date, dir) {
             date = date || this.focused || this.date;
 
-            var nextView = dir == 'up' ? this.viewIndex + 1 : this.viewIndex - 1;
+            var nextView = dir === 'up' ? this.viewIndex + 1 : this.viewIndex - 1;
             if (nextView > 2) nextView = 2;
             if (nextView < 0) nextView = 0;
 
@@ -918,8 +1026,8 @@
                     break;
             }
 
-            totalDaysInNextMonth = datepicker.getDaysCount(new Date(y,m));
-            newDate = new Date(y,m,d);
+            totalDaysInNextMonth = datepicker.getDaysCount(new Date(y, m));
+            newDate = new Date(y, m, d);
 
             // If next month has less days than current, set date to total days in that month
             if (totalDaysInNextMonth < d) d = totalDaysInNextMonth;
@@ -947,7 +1055,7 @@
 
         _registerKey: function (key) {
             var exists = this.keys.some(function (curKey) {
-                return curKey == key;
+                return curKey === key;
             });
 
             if (!exists) {
@@ -969,9 +1077,9 @@
 
             for (var hotKey in hotKeys) {
                 currentHotKey = hotKeys[hotKey];
-                if (pressedKeys.length != currentHotKey.length) continue;
+                if (currentHotKey.length !== pressedKeys.length) continue;
 
-                if (currentHotKey.every(function (key, i) { return key == pressedKeys[i]})) {
+                if (currentHotKey.every(function (key, i) { return key === pressedKeys[i]})) {
                     _this._trigger('hotKey', hotKey);
                     found = true;
                 }
@@ -992,34 +1100,34 @@
                 m = date.month,
                 d = date.date;
 
-            if (this._isHotKeyPressed()){
+            if (this._isHotKeyPressed()) {
                 return;
             }
 
-            switch(keyCode) {
+            switch (keyCode) {
                 case 37: // left
-                    type == 'day' ? (d -= 1) : '';
-                    type == 'month' ? (m -= 1) : '';
-                    type == 'year' ? (y -= 1) : '';
+                    type === 'day' ? (d -= 1) : '';
+                    type === 'month' ? (m -= 1) : '';
+                    type === 'year' ? (y -= 1) : '';
                     break;
                 case 38: // up
-                    type == 'day' ? (d -= 7) : '';
-                    type == 'month' ? (m -= 3) : '';
-                    type == 'year' ? (y -= 4) : '';
+                    type === 'day' ? (d -= 7) : '';
+                    type === 'month' ? (m -= 3) : '';
+                    type === 'year' ? (y -= 4) : '';
                     break;
                 case 39: // right
-                    type == 'day' ? (d += 1) : '';
-                    type == 'month' ? (m += 1) : '';
-                    type == 'year' ? (y += 1) : '';
+                    type === 'day' ? (d += 1) : '';
+                    type === 'month' ? (m += 1) : '';
+                    type === 'year' ? (y += 1) : '';
                     break;
                 case 40: // down
-                    type == 'day' ? (d += 7) : '';
-                    type == 'month' ? (m += 3) : '';
-                    type == 'year' ? (y += 4) : '';
+                    type === 'day' ? (d += 7) : '';
+                    type === 'month' ? (m += 3) : '';
+                    type === 'year' ? (y += 4) : '';
                     break;
             }
 
-            var nd = new Date(y,m,d);
+            var nd = new Date(y, m, d);
             if (nd.getTime() < this.minTime) {
                 nd = this.minDate;
             } else if (nd.getTime() > this.maxTime) {
@@ -1031,7 +1139,7 @@
         },
 
         _getFocusedDate: function () {
-            var focused  = this.focused || this.selectedDates[this.selectedDates.length - 1],
+            var focused = this.focused || this.selectedDates[this.selectedDates.length - 1],
                 d = this.parsedDate;
 
             if (!focused) {
@@ -1074,8 +1182,8 @@
         destroy: function () {
             var _this = this;
             _this.$el
-                .off('.adp')
-                .data('datepicker', '');
+                 .off('.adp')
+                 .data('datepicker', '');
 
             _this.selectedDates = [];
             _this.focused = '';
@@ -1095,13 +1203,13 @@
             if (this.opts.range) {
                 if (!this.opts.toggleSelected) {
                     // Add possibility to select same date when range is true
-                    if (this.selectedDates.length != 2) {
+                    if (this.selectedDates.length !== 2) {
                         this._trigger('clickCell', selectedDate);
                     }
                 } else {
                     this.removeDate(selectedDate);
                 }
-            } else if (this.opts.toggleSelected){
+            } else if (this.opts.toggleSelected) {
                 this.removeDate(selectedDate);
             }
 
@@ -1161,7 +1269,7 @@
 
         _onMouseUpEl: function (e) {
             e.originalEvent.inFocus = true;
-            setTimeout(this._onKeyUpGeneral.bind(this),4);
+            setTimeout(this._onKeyUpGeneral.bind(this), 4);
         },
 
         _onKeyDown: function (e) {
@@ -1175,10 +1283,10 @@
             }
 
             // Enter
-            if (code == 13) {
+            if (code === 13) {
                 if (this.focused) {
                     if (this._getCell(this.focused).hasClass('-disabled-')) return;
-                    if (this.view != this.opts.minView) {
+                    if (this.view !== this.opts.minView) {
                         this.down()
                     } else {
                         var alreadySelected = this._isSelected(this.focused, this.cellType);
@@ -1197,7 +1305,7 @@
             }
 
             // Esc
-            if (code == 27) {
+            if (code === 27) {
                 this.hide();
             }
         },
@@ -1227,7 +1335,7 @@
             this.focused = date;
             this.silent = false;
 
-            if (this.opts.range && this.selectedDates.length == 1) {
+            if (this.opts.range && this.selectedDates.length === 1) {
                 this.minRange = this.selectedDates[0];
                 this.maxRange = '';
                 if (datepicker.less(this.minRange, this.focused)) {
@@ -1288,7 +1396,7 @@
                 }
             }
             this._focused = val;
-            if (this.opts.range && this.selectedDates.length == 1) {
+            if (this.opts.range && this.selectedDates.length === 1) {
                 this.minRange = this.selectedDates[0];
                 this.maxRange = '';
                 if (datepicker.less(this.minRange, this._focused)) {
@@ -1308,7 +1416,7 @@
             return datepicker.getParsedDate(this.date);
         },
 
-        set date (val) {
+        set date(val) {
             if (!(val instanceof Date)) return;
 
             this.currentDate = val;
@@ -1323,11 +1431,11 @@
             return val;
         },
 
-        get date () {
+        get date() {
             return this.currentDate
         },
 
-        set view (val) {
+        set view(val) {
             this.viewIndex = this.viewIndexes.indexOf(val);
 
             if (this.viewIndex < 0) {
@@ -1339,7 +1447,7 @@
 
             if (this.inited) {
                 if (!this.views[val]) {
-                    this.views[val] = new  $.fn.datepicker.Body(this, val, this.opts)
+                    this.views[val] = new $.fn.datepicker.Body(this, val, this.opts)
                 } else {
                     this.views[val]._render();
                 }
@@ -1388,6 +1496,9 @@
     };
 
     datepicker.getParsedDate = function (date) {
+        if (typeof date === 'string') {
+            date = new Date(date);
+        }
         return {
             year: date.getFullYear(),
             month: date.getMonth(),
@@ -1396,9 +1507,9 @@
             fullDate: date.getDate() < 10 ? '0' + date.getDate() : date.getDate(),
             day: date.getDay(),
             hours: date.getHours(),
-            fullHours:  date.getHours() < 10 ? '0' + date.getHours() :  date.getHours() ,
+            fullHours: date.getHours() < 10 ? '0' + date.getHours() : date.getHours(),
             minutes: date.getMinutes(),
-            fullMinutes:  date.getMinutes() < 10 ? '0' + date.getMinutes() :  date.getMinutes()
+            fullMinutes: date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes()
         }
     };
 
@@ -1409,7 +1520,7 @@
     };
 
     datepicker.template = function (str, data) {
-        return str.replace(/#\{([\w]+)\}/g, function (source, match) {
+        return str.replace(/#{([\w]+)}/g, function (source, match) {
             if (data[match] || data[match] === 0) {
                 return data[match]
             }
@@ -1423,9 +1534,9 @@
             _type = type ? type : 'day',
 
             conditions = {
-                day: d1.date == d2.date && d1.month == d2.month && d1.year == d2.year,
-                month: d1.month == d2.month && d1.year == d2.year,
-                year: d1.year == d2.year
+                day: d1.date === d2.date && d1.month === d2.month && d1.year === d2.year,
+                month: d1.month === d2.month && d1.year === d2.year,
+                year: d1.year === d2.year
             };
 
         return conditions[_type];
@@ -1450,16 +1561,16 @@
      * @param date {Date}
      */
     datepicker.resetTime = function (date) {
-        if (typeof date != 'object') return;
+        if (typeof date !== 'object') return;
         date = datepicker.getParsedDate(date);
         return new Date(date.year, date.month, date.date)
     };
 
-    $.fn.datepicker = function ( options ) {
+    $.fn.datepicker = function (options) {
         return this.each(function () {
             if (!$.data(this, pluginName)) {
-                $.data(this,  pluginName,
-                    new Datepicker( this, options ));
+                $.data(this, pluginName,
+                       new Datepicker(this, options));
             } else {
                 var _this = $.data(this, pluginName);
 
@@ -1472,17 +1583,17 @@
     $.fn.datepicker.Constructor = Datepicker;
 
     $.fn.datepicker.language = {
-        ru: {
-            days: ['Воскресенье', 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота'],
-            daysShort: ['Вос','Пон','Вто','Сре','Чет','Пят','Суб'],
-            daysMin: ['Вс','Пн','Вт','Ср','Чт','Пт','Сб'],
-            months: ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'],
-            monthsShort: ['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн', 'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек'],
-            today: 'Сегодня',
-            clear: 'Очистить',
-            dateFormat: 'dd.mm.yyyy',
-            timeFormat: 'hh:ii',
-            firstDay: 1
+        en: {
+            days: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+            daysShort: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+            daysMin: ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'],
+            months: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+            monthsShort: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+            today: 'Today',
+            clear: 'Clear',
+            dateFormat: 'MM/dd/yyyy',
+            timeFormat: 'HH:mm a',
+            firstDay: 0
         }
     };
 
@@ -1540,12 +1651,12 @@
         },
 
         _getDayNamesHtml: function (firstDay, curDay, html, i) {
-            curDay = curDay != undefined ? curDay : firstDay;
+            curDay = curDay !== undefined ? curDay : firstDay;
             html = html ? html : '';
-            i = i != undefined ? i : 0;
+            i = i !== undefined ? i : 0;
 
             if (i > 7) return html;
-            if (curDay == 7) return this._getDayNamesHtml(firstDay, 0, html, ++i);
+            if (curDay === 7) return this._getDayNamesHtml(firstDay, 0, html, ++i);
 
             html += '<div class="datepicker--day-name' + (this.d.isWeekend(curDay) ? " -weekend-" : "") + '">' + this.d.loc.daysMin[curDay] + '</div>';
 
@@ -1566,7 +1677,7 @@
             switch (type) {
                 case 'day':
                     if (parent.isWeekend(d.day)) classes += " -weekend-";
-                    if (d.month != this.d.parsedDate.month) {
+                    if (d.month !== this.d.parsedDate.month) {
                         classes += " -other-month-";
                         if (!opts.selectOtherMonths) {
                             classes += " -disabled-";
@@ -1600,7 +1711,7 @@
                 if (dp.isSame(minRange, date, type)) classes += ' -range-from-';
                 if (dp.isSame(maxRange, date, type)) classes += ' -range-to-';
 
-                if (parent.selectedDates.length == 1 && parent.focused) {
+                if (parent.selectedDates.length === 1 && parent.focused) {
                     if (
                         (dp.bigger(minRange, date) && dp.less(parent.focused, date)) ||
                         (dp.less(maxRange, date) && dp.bigger(parent.focused, date)))
@@ -1615,7 +1726,7 @@
                         classes += ' -range-to-'
                     }
 
-                } else if (parent.selectedDates.length == 2) {
+                } else if (parent.selectedDates.length === 2) {
                     if (dp.bigger(minRange, date) && dp.less(maxRange, date)) {
                         classes += ' -in-range-'
                     }
@@ -1699,8 +1810,7 @@
         },
 
         _getYearsHtml: function (date) {
-            var d = dp.getParsedDate(date),
-                decade = dp.getDecade(date),
+            var decade = dp.getDecade(date),
                 firstYear = decade[0] - 1,
                 html = '',
                 i = firstYear;
@@ -1747,13 +1857,11 @@
             var $cells = $('.datepicker--cell', this.$cells),
                 _this = this,
                 classes,
-                $cell,
                 date;
-            $cells.each(function (cell, i) {
-                $cell = $(this);
+            $cells.each(function (cell) {
                 date = _this.d._getDateFromCell($(this));
                 classes = _this._getCellContents(date, _this.d.cellType);
-                $cell.attr('class',classes.classes)
+                $(cell).attr('class',classes.classes)
             });
         },
 
@@ -1777,7 +1885,7 @@
                 year = el.data('year') || this.d.parsedDate.year,
                 dp = this.d;
             // Change view if min view does not reach yet
-            if (dp.view != this.opts.minView) {
+            if (dp.view !== this.opts.minView) {
                 dp.down(new Date(year, month, date));
                 return;
             }
@@ -1855,7 +1963,7 @@
             var title = this._getTitle(this.d.currentDate),
                 html = dp.template(template, $.extend({title: title}, this.opts));
             this.d.$nav.html(html);
-            if (this.d.view == 'years') {
+            if (this.d.view === 'years') {
                 $('.datepicker--nav-title', this.d.$nav).addClass('-disabled-');
             }
             this.setNavStatus();
@@ -1940,7 +2048,7 @@
         _onClickNavTitle: function (e) {
             if ($(e.target).hasClass('-disabled-')) return;
 
-            if (this.d.view == 'days') {
+            if (this.d.view === 'days') {
                 return this.d.view = 'months'
             }
 
@@ -2161,10 +2269,10 @@
 
             if (_ampm) {
                 switch(true) {
-                    case hours == 0:
+                    case hours === 0:
                         hours = 12;
                         break;
-                    case hours == 12:
+                    case hours === 12:
                         dayPeriod = 'pm';
                         break;
                     case hours > 11:

@@ -102,7 +102,7 @@ block content
         h3#example-months Month selection
         +example
             +example-content
-                input.datepicker-here(type='text' data-min-view='months' data-view='months' data-date-format='MM yyyy' data-language='en')
+                input.datepicker-here(type='text' data-min-view='months' data-view='months' data-date-format='MMMM yyyy' data-language='en')
             +example-code('html')
                 :code
                     <input type="text"
@@ -110,7 +110,7 @@ block content
                            data-language='en'
                            data-min-view="months"
                            data-view="months"
-                           data-date-format="MM yyyy" />
+                           data-date-format="MMMM yyyy" />
         h3#example-min-max Minimum and maximum dates
         p
             | To limit date selection, use
@@ -362,10 +362,10 @@ block content
 
         +example
             +example-content
-                input.datepicker-here(type='text' data-timepicker='true', data-time-format='hh:ii aa')
+                input.datepicker-here(type='text' data-timepicker='true', data-time-format='HH:mm a')
             +example-code
                 :code
-                    <div class="datepicker-here" data-timepicker="true" data-time-format='hh:ii aa'></div>
+                    <div class="datepicker-here" data-timepicker="true" data-time-format='HH:mm a'></div>
 
         h3#timeformat-actions Actions with time
         p For setting max/min hours or minutes values use
@@ -509,7 +509,7 @@ block content
                     ...
                 }
             })
-        p If some fields are missing, they will be taken from default localization object ('Russian').
+        p If some fields are missing, they will be taken from default localization object ('English').
         h3 Example of localization object
         +example-code('js').
             $.fn.datepicker.language['en'] = {
@@ -520,8 +520,8 @@ block content
                 monthsShort: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
                 today: 'Today',
                 clear: 'Clear',
-                dateFormat: 'mm/dd/yyyy',
-                timeFormat: 'hh:ii aa'
+                dateFormat: 'MM/dd/yyyy',
+                timeFormat: 'HH:mm a'
                 firstDay: 0
             };
         p Available localizations located in
@@ -543,9 +543,9 @@ block content
                 +example-inline('Datepicker.language', 'js')
                 | object.
                 | If object is passed, then data will be taken from this object directly.
-            p If some fields are missing, they will be taken from default localization object ('Russian').
+            p If some fields are missing, they will be taken from default localization object ('English').
         .param
-            +param-header('startDate', 'Date', 'new Date()')
+            +param-header('startDate', 'Date|string', 'new Date()')
             p This date will be shown at first initialization.
         .param
             +param-header('firstDay', 'number', '""')
@@ -561,7 +561,7 @@ block content
                 | . By default its Saturday and Sunday.
         .param
             +param-header('dateFormat', 'string', '""')
-            p Desirable date format. It's combination of d, m, yyyy, D, M, etc. By default value is taken from current localization, but if it passed here, then it will have higher priority.
+            p Desirable date format. It's combination of d, M, yyyy, D, etc. By default value is taken from current localization, but if it passed here, then it will have higher priority.
             ul
                 li
                     +param('@')
@@ -579,16 +579,16 @@ block content
                     +param('DD')
                     | - full day name
                 li
-                    +param('m')
+                    +param('M')
                     | - month number
                 li
-                    +param('mm')
+                    +param('MM')
                     | - month number with leading zero
                 li
-                    +param('M')
+                    +param('MMM')
                     | - short month name
                 li
-                    +param('MM')
+                    +param('MMMM')
                     | - full month name
                 li
                     +param('yy')
@@ -694,10 +694,10 @@ block content
             +param-header('moveToOtherYearsOnSelect', 'boolean', 'true')
             p If true, then selecting year from other decade, will cause transition to that decade.
         .param
-            +param-header('minDate', 'Date', '""')
+            +param-header('minDate', 'Date|string', '""')
             p The minimum date for selection. All dates, running before it can't be activated.
         .param
-            +param-header('maxDate', 'Date', '""')
+            +param-header('maxDate', 'Date|string', '""')
             p The maximum date for selection. All dates which comes after it cannot be selected.
         .param
             +param-header('disableNavWhenOutOfRange', 'boolean', 'true')
@@ -741,7 +741,7 @@ block content
                 +example-code('js')
                     :code
                         navTitles = {
-                              days: 'MM, <i>yyyy</i>',
+                              days: 'MMMM, <i>yyyy</i>',
                               months: 'yyyy',
                               years: 'yyyy1 - yyyy2'
                           };
@@ -753,7 +753,7 @@ block content
                 :code
                     $('#my-datepicker').datepicker({
                            navTitles: {
-                               days: '<h3>Check in date:</h3> MM, yyyy'
+                               days: '<h3>Check in date:</h3> MMMM, yyyy'
                            }
                        })
         .param
@@ -774,30 +774,27 @@ block content
             +param-header('timeFormat', 'string', 'null', 'opts-timeFormat')
             p
                 | Desirable time format. Taken from localization by default. If value passed here, then it will be used instead.
-                | For using 12 hours mode, add "aa" or "AA" to your
+                | For using 12 hours mode, add "a" to your
                 +example-inline('timeFormat','js')
                 | parameter, e.g.
-                +example-inline('{timeFormat: "hh:ii AA"}','js')
+                +example-inline('{timeFormat: "HH:mm a"}','js')
                 | Possible values are:
             ul
                 li
-                    +param('h')
+                    +param('H')
                     | - hours
                 li
-                    +param('hh')
+                    +param('HH')
                     | - hours with leading zero
                 li
-                    +param('i')
+                    +param('m')
                     | - minutes
                 li
-                    +param('ii')
+                    +param('mm')
                     | - minutes with leading zero
                 li
-                    +param('aa')
-                    | - day period - 'am' or 'pm'
-                li
-                    +param('AA')
-                    | - day period capitalized
+                    +param('a')
+                    | - day period - 'AM' or 'PM'
 
         .param
             +param-header('minHours', 'number', '0', 'opts-minHours')

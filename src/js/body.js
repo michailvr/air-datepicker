@@ -46,12 +46,12 @@
         },
 
         _getDayNamesHtml: function (firstDay, curDay, html, i) {
-            curDay = curDay != undefined ? curDay : firstDay;
+            curDay = curDay !== undefined ? curDay : firstDay;
             html = html ? html : '';
-            i = i != undefined ? i : 0;
+            i = i !== undefined ? i : 0;
 
             if (i > 7) return html;
-            if (curDay == 7) return this._getDayNamesHtml(firstDay, 0, html, ++i);
+            if (curDay === 7) return this._getDayNamesHtml(firstDay, 0, html, ++i);
 
             html += '<div class="datepicker--day-name' + (this.d.isWeekend(curDay) ? " -weekend-" : "") + '">' + this.d.loc.daysMin[curDay] + '</div>';
 
@@ -72,7 +72,7 @@
             switch (type) {
                 case 'day':
                     if (parent.isWeekend(d.day)) classes += " -weekend-";
-                    if (d.month != this.d.parsedDate.month) {
+                    if (d.month !== this.d.parsedDate.month) {
                         classes += " -other-month-";
                         if (!opts.selectOtherMonths) {
                             classes += " -disabled-";
@@ -106,7 +106,7 @@
                 if (dp.isSame(minRange, date, type)) classes += ' -range-from-';
                 if (dp.isSame(maxRange, date, type)) classes += ' -range-to-';
 
-                if (parent.selectedDates.length == 1 && parent.focused) {
+                if (parent.selectedDates.length === 1 && parent.focused) {
                     if (
                         (dp.bigger(minRange, date) && dp.less(parent.focused, date)) ||
                         (dp.less(maxRange, date) && dp.bigger(parent.focused, date)))
@@ -121,7 +121,7 @@
                         classes += ' -range-to-'
                     }
 
-                } else if (parent.selectedDates.length == 2) {
+                } else if (parent.selectedDates.length === 2) {
                     if (dp.bigger(minRange, date) && dp.less(maxRange, date)) {
                         classes += ' -in-range-'
                     }
@@ -205,8 +205,7 @@
         },
 
         _getYearsHtml: function (date) {
-            var d = dp.getParsedDate(date),
-                decade = dp.getDecade(date),
+            var decade = dp.getDecade(date),
                 firstYear = decade[0] - 1,
                 html = '',
                 i = firstYear;
@@ -253,13 +252,11 @@
             var $cells = $('.datepicker--cell', this.$cells),
                 _this = this,
                 classes,
-                $cell,
                 date;
-            $cells.each(function (cell, i) {
-                $cell = $(this);
+            $cells.each(function (cell) {
                 date = _this.d._getDateFromCell($(this));
                 classes = _this._getCellContents(date, _this.d.cellType);
-                $cell.attr('class',classes.classes)
+                $(cell).attr('class',classes.classes)
             });
         },
 
@@ -283,7 +280,7 @@
                 year = el.data('year') || this.d.parsedDate.year,
                 dp = this.d;
             // Change view if min view does not reach yet
-            if (dp.view != this.opts.minView) {
+            if (dp.view !== this.opts.minView) {
                 dp.down(new Date(year, month, date));
                 return;
             }
