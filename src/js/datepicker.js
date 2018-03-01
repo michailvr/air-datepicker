@@ -374,8 +374,9 @@
         },
 
         parseDate: function (string, multiValue) {
-            var boundary = this._getWordBoundaryRegExp;
-            var locale = this.loc;
+            var _this = this;
+            var boundary = _this._getWordBoundaryRegExp;
+            var locale = _this.loc;
             var format = locale.dateFormat;
             if (format.match(boundary('@'))) {
                 try {
@@ -433,13 +434,13 @@
                 if (matches) {
                     matches.forEach(function (match) {
                         match = string.match(regex).splice(1);
-                        result.push(this._parseDate0(match, groups, (ampm && /PM/.test(string)), locale));
+                        result.push(_this._parseDate0(match, groups, (ampm && /PM/.test(string)), locale));
                     });
                 }
                 return result;
             } else {
                 var match = string.match(regex).splice(1);
-                return this._parseDate0(match, groups, (ampm && /PM/.test(string)), locale);
+                return _this._parseDate0(match, groups, (ampm && /PM/.test(string)), locale);
             }
         },
 
