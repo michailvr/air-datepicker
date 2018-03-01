@@ -167,6 +167,10 @@
                 if (this.el.value) {
                     if (this.opts.multipleDates || this.opts.range) {
                         this.selectedDates = this.selectedDates.concat(this.parseDate(this.el.value, true));
+                        if (this.selectedDates.length === 2) {
+                            this.minRange = this.selectedDates[0];
+                            this.maxRange = this.selectedDates[1];
+                        }
                     } else {
                         this.currentDate = this.parseDate(this.el.value);
                         this.selectedDates.push(this.currentDate);
@@ -433,7 +437,7 @@
                 var result = [];
                 if (matches) {
                     matches.forEach(function (match) {
-                        match = string.match(regex).splice(1);
+                        match = match.match(regex).splice(1);
                         result.push(_this._parseDate0(match, groups, (ampm && /PM/.test(string)), locale));
                     });
                 }
