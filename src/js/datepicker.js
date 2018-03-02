@@ -357,6 +357,17 @@
                     break;
             }
         },
+        nextDate: function () {
+            var d = this.parsedDate;
+            var newDate = new Date(d.year, d.month, d.date + 1);
+            var cell = this._getCell(newDate);
+            if (cell.hasClass('-disabled-')) return;
+            this.silent = true;
+            this.view = this.opts.minView;
+            this.silent = false;
+            this.date = newDate;
+            this._trigger('clickCell', newDate)
+        },
 
         prev: function () {
             var d = this.parsedDate,
@@ -375,6 +386,18 @@
                     if (o.onChangeDecade) o.onChangeDecade(this.curDecade);
                     break;
             }
+        },
+
+        prevDate: function () {
+            var d = this.parsedDate;
+            var newDate = new Date(d.year, d.month, d.date - 1);
+            var cell = this._getCell(newDate);
+            if (cell.hasClass('-disabled-')) return;
+            this.silent = true;
+            this.view = this.opts.minView;
+            this.silent = false;
+            this.date = newDate;
+            this._trigger('clickCell', newDate)
         },
 
         parseDate: function (string, multiValue) {
@@ -448,7 +471,7 @@
             }
         },
 
-        _parseDate0: function(match, groups, ampm, locale) {
+        _parseDate0: function (match, groups, ampm, locale) {
             var toInt = function (value, failback) {
                 try {
                     return parseInt(value, 10);
@@ -1369,6 +1392,9 @@
             if (selectedDates.length) {
                 selected = true;
                 date = this.lastSelectedDate;
+                if (!date) {
+                    date = selectedDates[0];
+                }
             }
 
             date.setHours(h);
@@ -1592,7 +1618,19 @@
             days: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
             daysShort: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
             daysMin: ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'],
-            months: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+            months: [
+                'January',
+                'February',
+                'March',
+                'April',
+                'May',
+                'June',
+                'July',
+                'August',
+                'September',
+                'October',
+                'November',
+                'December'],
             monthsShort: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
             today: 'Today',
             clear: 'Clear',
