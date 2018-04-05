@@ -109,6 +109,7 @@
 
             showEvent: 'focus',
             autoClose: false,
+            closeAfterClear: false,
 
             // navigation
             monthsField: 'monthsShort',
@@ -794,6 +795,13 @@
             this.minRange = '';
             this.maxRange = '';
             this.views[this.currentView]._render();
+
+            if (this.opts.closeAfterClear && !this.timepickerIsActive) {
+                if (!!this.$el.val()) {
+                    this.hide();
+                }
+            }
+
             this._setInputValue();
             if (this.opts.onSelect) {
                 this._triggerOnChange()
