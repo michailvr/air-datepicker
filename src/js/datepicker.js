@@ -1,5 +1,5 @@
 ;(function () {
-    var VERSION = '2.2.4',
+    var VERSION = '2.2.8',
         pluginName = 'datepicker',
         autoInitSelector = '.datepicker-here',
         $body, $datepickersContainer,
@@ -358,7 +358,7 @@
             }
         },
         nextDate: function () {
-            var d = this.parsedDate;
+            var d = datepicker.getParsedDate(this.lastSelectedDate || this.date);
             var newDate = new Date(d.year, d.month, d.date + 1);
             var cell = this._getCell(newDate);
             if (cell.hasClass('-disabled-')) return;
@@ -389,7 +389,7 @@
         },
 
         prevDate: function () {
-            var d = this.parsedDate;
+            var d = datepicker.getParsedDate(this.lastSelectedDate || this.date);
             var newDate = new Date(d.year, d.month, d.date - 1);
             var cell = this._getCell(newDate);
             if (cell.hasClass('-disabled-')) return;

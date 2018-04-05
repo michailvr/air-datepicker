@@ -7,6 +7,7 @@ var gulp = require('gulp'),
 
 module.exports = function () {
     var stream = gulp.src([
+        'src/js/function-bind.js',
         'src/js/datepicker.js',
         'src/js/body.js',
         'src/js/navigation.js',

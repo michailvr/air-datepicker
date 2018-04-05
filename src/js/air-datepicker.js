@@ -1,3 +1,4 @@
+require('./function-bind');
 require('./datepicker');
 require('./body');
 require('./navigation');

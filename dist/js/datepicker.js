@@ -1,5 +1,64 @@
 ;(function (window, $, undefined) { ;(function () {
-    var VERSION = '2.2.4',
+    'use strict';
+    if (!Function.prototype.bind) {
+        'use strict';
+
+        /* eslint no-invalid-this: 1 */
+
+        var ERROR_MESSAGE = 'Function.prototype.bind called on incompatible ';
+        var slice = Array.prototype.slice;
+        var toStr = Object.prototype.toString;
+        var funcType = '[object Function]';
+
+        Function.prototype.bind = function bind(that) {
+            var target = this;
+            if (typeof target !== 'function' || toStr.call(target) !== funcType) {
+                throw new TypeError(ERROR_MESSAGE + target);
+            }
+            var args = slice.call(arguments, 1);
+
+            var bound;
+            var binder = function () {
+                if (this instanceof bound) {
+                    var result = target.apply(
+                        this,
+                        args.concat(slice.call(arguments))
+                    );
+                    if (Object(result) === result) {
+                        return result;
+                    }
+                    return this;
+                } else {
+                    return target.apply(
+                        that,
+                        args.concat(slice.call(arguments))
+                    );
+                }
+            };
+
+            var boundLength = Math.max(0, target.length - args.length);
+            var boundArgs = [];
+            for (var i = 0; i < boundLength; i++) {
+                boundArgs.push('$' + i);
+            }
+
+            bound = Function('binder', 'return function (' + boundArgs.join(',') + '){ return binder.apply(this,arguments); }')(binder);
+
+            if (target.prototype) {
+                var Empty = function Empty() {};
+                Empty.prototype = target.prototype;
+                bound.prototype = new Empty();
+                Empty.prototype = null;
+            }
+
+            return bound;
+        };
+    }
+
+})();
+
+;(function () {
+    var VERSION = '2.2.8',
         pluginName = 'datepicker',
         autoInitSelector = '.datepicker-here',
         $body, $datepickersContainer,
@@ -358,7 +417,7 @@
             }
         },
         nextDate: function () {
-            var d = this.parsedDate;
+            var d = datepicker.getParsedDate(this.lastSelectedDate || this.date);
             var newDate = new Date(d.year, d.month, d.date + 1);
             var cell = this._getCell(newDate);
             if (cell.hasClass('-disabled-')) return;
@@ -389,7 +448,7 @@
         },
 
         prevDate: function () {
-            var d = this.parsedDate;
+            var d = datepicker.getParsedDate(this.lastSelectedDate || this.date);
             var newDate = new Date(d.year, d.month, d.date - 1);
             var cell = this._getCell(newDate);
             if (cell.hasClass('-disabled-')) return;
