@@ -1,4 +1,4 @@
-$.fn.datepicker.language['ka'] = {
+;(function ($) { $.fn.datepicker.language['ka'] = {
     days: ['კვირა','ორშაბათი','სამშაბათი','ოთხშაბათი','ხუთშაბათი','პარასკევი','შაბათი'],
     daysShort: ['კვ', 'ორშ', 'სამ', 'ოთხ', 'ხუთ', 'პარ', 'შაბ'],
     daysMin: ['კვ', 'ორშ', 'სამ', 'ოთხ', 'ხუთ', 'პარ', 'შაბ'],
@@ -9,4 +9,4 @@ $.fn.datepicker.language['ka'] = {
     dateFormat: 'MM/dd/yyyy',
     timeFormat: 'HH:mm a',
     firstDay: 0
-};
+}; })(jQuery);
