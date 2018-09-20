@@ -7,11 +7,12 @@ var gulp = require('gulp'),
     minify = require('gulp-minify-css'),
     concat = require('gulp-concat');
 
-module.exports = function () {
+module.exports = function (done) {
     gulp.src('docs/sass/init.scss')
         .pipe(concat('style.css'))
         .pipe(sass().on('error', sass.logError))
         .pipe(postcss([autoprefixer]))
         .pipe(minify())
-        .pipe(gulp.dest('docs/css'))
+        .pipe(gulp.dest('docs/css'));
+    done();
 };

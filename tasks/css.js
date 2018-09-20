@@ -7,7 +7,7 @@ var gulp = require('gulp'),
     minify = require('gulp-minify-css'),
     concat = require('gulp-concat');
 
-module.exports = function () {
+module.exports = function (done) {
     var stream = gulp.src('src/sass/*.scss')
         .pipe(concat('datepicker.scss'))
         .pipe(sass().on('error', sass.logError))
@@ -20,5 +20,6 @@ module.exports = function () {
 
     stream.pipe(clone())
         .pipe(rename('datepicker.css'))
-        .pipe(gulp.dest('dist/css'))
+        .pipe(gulp.dest('dist/css'));
+    done();
 };

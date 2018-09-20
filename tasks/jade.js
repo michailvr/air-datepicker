@@ -15,7 +15,7 @@ _jade.filters.code = function( block ) {
 };
 
 module.exports = {
-    ru: function () {
+    ru: function (done) {
         gulp.src('docs/jade/pages/index-ru.jade')
             .pipe(plumber())
             .pipe(jade({
@@ -23,9 +23,10 @@ module.exports = {
                     lang: 'ru'
                 }
             }))
-            .pipe(gulp.dest('docs/'))
+            .pipe(gulp.dest('docs/'));
+        done();
     },
-    en: function () {
+    en: function (done) {
         gulp.src('docs/jade/pages/index.jade')
             .pipe(plumber())
             .pipe(jade({
@@ -33,6 +34,7 @@ module.exports = {
                     lang: 'en'
                 }
             }))
-            .pipe(gulp.dest('docs/'))
+            .pipe(gulp.dest('docs/'));
+        done();
     }
 };

@@ -5,7 +5,7 @@ var gulp = require('gulp'),
     wrap = require('gulp-wrap'),
     concat = require('gulp-concat');
 
-module.exports = function () {
+module.exports = function (done) {
     var stream = gulp.src([
         'src/js/function-bind.js',
         'src/js/datepicker.js',
@@ -22,6 +22,7 @@ module.exports = function () {
     stream.pipe(clone())
         .pipe(uglify())
         .pipe(rename('datepicker.min.js'))
-        .pipe(gulp.dest('dist/js'))
+        .pipe(gulp.dest('dist/js'));
 
+    done();
 };

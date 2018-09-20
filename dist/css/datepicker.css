@@ -51,8 +51,10 @@
           flex-wrap: wrap; }
 
 .datepicker--cell {
-  border-radius: 4px;
-  box-sizing: border-box;
+  -webkit-border-radius: 4px;
+          border-radius: 4px;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
   cursor: pointer;
   display: -webkit-box;
   display: -webkit-flex;
@@ -80,7 +82,8 @@
   .datepicker--cell.-in-range- {
     background: rgba(92, 196, 239, 0.1);
     color: #4a4a4a;
-    border-radius: 0; }
+    -webkit-border-radius: 0;
+            border-radius: 0; }
     .datepicker--cell.-in-range-.-focus- {
       background-color: rgba(92, 196, 239, 0.2); }
   .datepicker--cell.-disabled- {
@@ -95,13 +98,16 @@
   .datepicker--cell.-range-from- {
     border: 1px solid rgba(92, 196, 239, 0.5);
     background-color: rgba(92, 196, 239, 0.1);
-    border-radius: 4px 0 0 4px; }
+    -webkit-border-radius: 4px 0 0 4px;
+            border-radius: 4px 0 0 4px; }
   .datepicker--cell.-range-to- {
     border: 1px solid rgba(92, 196, 239, 0.5);
     background-color: rgba(92, 196, 239, 0.1);
-    border-radius: 0 4px 4px 0; }
+    -webkit-border-radius: 0 4px 4px 0;
+            border-radius: 0 4px 4px 0; }
   .datepicker--cell.-range-from-.-range-to- {
-    border-radius: 4px; }
+    -webkit-border-radius: 4px;
+            border-radius: 4px; }
   .datepicker--cell.-selected- {
     color: #fff;
     border: none;
@@ -200,9 +206,12 @@
 .datepicker {
   background: #fff;
   border: 1px solid #dbdbdb;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  border-radius: 4px;
-  box-sizing: content-box;
+  -webkit-box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  -webkit-border-radius: 4px;
+          border-radius: 4px;
+  -webkit-box-sizing: content-box;
+          box-sizing: content-box;
   font-family: Tahoma, sans-serif;
   font-size: 14px;
   color: #4a4a4a;
@@ -212,6 +221,7 @@
   opacity: 0;
   -webkit-transition: opacity 0.3s ease, left 0s 0.3s, -webkit-transform 0.3s ease;
   transition: opacity 0.3s ease, left 0s 0.3s, -webkit-transform 0.3s ease;
+  -o-transition: opacity 0.3s ease, transform 0.3s ease, left 0s 0.3s;
   transition: opacity 0.3s ease, transform 0.3s ease, left 0s 0.3s;
   transition: opacity 0.3s ease, transform 0.3s ease, left 0s 0.3s, -webkit-transform 0.3s ease;
   z-index: 100; }
@@ -238,12 +248,14 @@
             transform: translate(0);
     -webkit-transition: opacity 0.3s ease, left 0s 0s, -webkit-transform 0.3s ease;
     transition: opacity 0.3s ease, left 0s 0s, -webkit-transform 0.3s ease;
+    -o-transition: opacity 0.3s ease, transform 0.3s ease, left 0s 0s;
     transition: opacity 0.3s ease, transform 0.3s ease, left 0s 0s;
     transition: opacity 0.3s ease, transform 0.3s ease, left 0s 0s, -webkit-transform 0.3s ease; }
 
 .datepicker-inline .datepicker {
   border-color: #d7d7d7;
-  box-shadow: none;
+  -webkit-box-shadow: none;
+          box-shadow: none;
   position: static;
   left: auto;
   right: auto;
@@ -256,7 +268,8 @@
   display: none; }
 
 .datepicker--content {
-  box-sizing: content-box;
+  -webkit-box-sizing: content-box;
+          box-sizing: content-box;
   padding: 4px; }
   .-only-timepicker- .datepicker--content {
     display: none; }
@@ -369,7 +382,8 @@
 
 .datepicker--nav-action {
   width: 32px;
-  border-radius: 4px;
+  -webkit-border-radius: 4px;
+          border-radius: 4px;
   -webkit-user-select: none;
      -moz-user-select: none;
       -ms-user-select: none;
@@ -387,7 +401,8 @@
     stroke-width: 2px; }
 
 .datepicker--nav-title {
-  border-radius: 4px;
+  -webkit-border-radius: 4px;
+          border-radius: 4px;
   padding: 0 8px; }
   .datepicker--nav-title i {
     font-style: normal;
@@ -410,7 +425,8 @@
 .datepicker--button {
   color: #4EB5E6;
   cursor: pointer;
-  border-radius: 4px;
+  -webkit-border-radius: 4px;
+          border-radius: 4px;
   -webkit-box-flex: 1;
   -webkit-flex: 1;
       -ms-flex: 1;
@@ -520,7 +536,8 @@
   .datepicker--time-current-minutes:after {
     content: '';
     background: #f0f0f0;
-    border-radius: 4px;
+    -webkit-border-radius: 4px;
+            border-radius: 4px;
     position: absolute;
     left: -2px;
     top: -3px;
@@ -553,7 +570,9 @@
           align-items: center;
   font-size: 11px;
   height: 17px;
+  background: -webkit-gradient(linear, left top, right top, from(#dedede), to(#dedede)) left 50%/100% 1px no-repeat;
   background: -webkit-linear-gradient(left, #dedede, #dedede) left 50%/100% 1px no-repeat;
+  background: -o-linear-gradient(left, #dedede, #dedede) left 50%/100% 1px no-repeat;
   background: linear-gradient(to right, #dedede, #dedede) left 50%/100% 1px no-repeat; }
   .datepicker--time-row:first-child {
     margin-bottom: 4px; }
@@ -590,14 +609,17 @@
         background: #5cc4ef;
         border-color: #5cc4ef; }
     .datepicker--time-row input[type='range']::-webkit-slider-thumb {
-      box-sizing: border-box;
+      -webkit-box-sizing: border-box;
+              box-sizing: border-box;
       height: 12px;
       width: 12px;
-      border-radius: 3px;
+      -webkit-border-radius: 3px;
+              border-radius: 3px;
       border: 1px solid #dedede;
       background: #fff;
       cursor: pointer;
       -webkit-transition: background .2s;
+      -o-transition: background .2s;
       transition: background .2s; }
     .datepicker--time-row input[type='range']::-moz-range-thumb {
       box-sizing: border-box;
@@ -608,6 +630,7 @@
       background: #fff;
       cursor: pointer;
       -webkit-transition: background .2s;
+      -o-transition: background .2s;
       transition: background .2s; }
     .datepicker--time-row input[type='range']::-ms-thumb {
       box-sizing: border-box;
@@ -618,6 +641,7 @@
       background: #fff;
       cursor: pointer;
       -webkit-transition: background .2s;
+      -o-transition: background .2s;
       transition: background .2s; }
     .datepicker--time-row input[type='range']::-webkit-slider-thumb {
       margin-top: -6px; }
@@ -649,7 +673,8 @@
 .datepicker--time-icon {
   color: #9c9c9c;
   border: 1px solid;
-  border-radius: 50%;
+  -webkit-border-radius: 50%;
+          border-radius: 50%;
   font-size: 16px;
   position: relative;
   margin: 0 5px -1px 0;

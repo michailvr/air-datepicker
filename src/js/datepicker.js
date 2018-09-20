@@ -125,6 +125,10 @@
             this.$altField = typeof this.opts.altField === 'string' ? $(this.opts.altField) : this.opts.altField;
         }
 
+        if (!this.opts.language) {
+            this.opts.language = $('html').attr('lang');
+        }
+
         this.inited = false;
         this.visible = false;
         this.silent = false; // Need to prevent unnecessary rendering

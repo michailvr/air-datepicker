@@ -5,8 +5,9 @@ var gulp = require('gulp'),
     clone = require('gulp-clone'),
     concat = require('gulp-concat');
 
-module.exports = function () {
+module.exports = function (done) {
     gulp.src('src/js/i18n/*.js')
         .pipe(wrap(';(function ($) { <%=contents%> })(jQuery);'))
-        .pipe(gulp.dest('dist/js/i18n'))
+        .pipe(gulp.dest('dist/js/i18n'));
+    done();
 };
