@@ -250,13 +250,11 @@
 
         _update: function () {
             var $cells = $('.datepicker--cell', this.$cells),
-                _this = this,
-                classes,
-                date;
-            $cells.each(function (cell) {
-                date = _this.d._getDateFromCell($(this));
-                classes = _this._getCellContents(date, _this.d.cellType);
-                $(cell).attr('class',classes.classes)
+                _this = this;
+            $cells.each(function (index, cell) {
+                var $cell = $(cell);
+                var classes = _this._getCellContents(_this.d._getDateFromCell($cell), _this.d.cellType);
+                $cell.attr('class',classes.classes)
             });
         },
 
